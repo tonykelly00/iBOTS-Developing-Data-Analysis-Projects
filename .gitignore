@@ -5,3 +5,5 @@ miniconda
 *.pyc
 *.zip
 *subject*
+*steinmetz*
+*figures*
