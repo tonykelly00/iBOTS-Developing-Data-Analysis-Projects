@@ -1,0 +1,20 @@
+workdir: "../.."
+
+rule all:
+    input:
+        #'figures/subject_one/response_time1_hist.png',
+        #'figures/subject_one/responese_time2_hist.png'
+        expand('figures/subject_one/response_time{session_id}_hist.png', session_id=[1,2])
+
+rule make_histogram:
+    input: 'data/raw/subject_one/response_time{session_id}.npy'
+    output: 'figures/subject_one/response_time{session_id}_hist.png'
+    run:
+        import numpy as np
+        import matplotlib.pyplot as plt
+        data = np.load(input[0])
+        plt.hist(data)
+        
+        #subject_id = wildcards.subject_id
+        #plt.title(f'(subject_id)')
+        plt.savefig(output[0])

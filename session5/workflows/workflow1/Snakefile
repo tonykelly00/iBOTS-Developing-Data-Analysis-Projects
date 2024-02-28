@@ -2,8 +2,11 @@ workdir: "../.."
 
 rule all:
     input:
-        "data/processed/dataset1_clean.csv",
-        "data/processed/dataset2_clean.csv"
+        #"data/processed/dataset1_clean.csv",
+        #"data/processed/dataset2_clean.csv"
+        expand("data/processed/dataset{session_id}_clean.csv", session_id=[1,2]),
+        expand("data/processed/dataset{session_id}_valid.csv", session_id=[1,2]),
+        expand("data/processed/dataset_{subject_id}/task{session_id}_valid.csv", subject_id=['one', 'two'], session_id=[1,2])
 
 rule clean_dataset:
     input: "data/raw/dataset{session_id}.csv"
@@ -13,3 +16,36 @@ rule clean_dataset:
         df = pd.read_csv(input[0])              # Use indexing since 'input' can contain multiple items
         df_clean = df.dropna()                  # remove rows with NaN values
         df_clean.to_csv(output[0], index=False) # Use indexing since 'output' can contain multiple items
+
+rule valid_dataset:
+    input: "data/raw/dataset{session_id}.csv"
+    output: "data/processed/dataset{session_id}_valid.csv"
+
+    run:
+        import pandas as pd
+        df = pd.read_csv(input[0])
+        df_valid = df[df.valid].copy()
+        df_valid.to_csv(output[0], index=False)
+
+rule valid_subject_dataset:
+    input: "data/raw/subject_{subject_id}/task{session_id}.csv"
+    output: "data/processed/dataset_{subject_id}/task{session_id}_valid.csv"
+
+    run:
+        import pandas as pd
+        df = pd.read_csv(input[0])
+        df_valid = df[df.valid].copy()
+        df_valid.to_csv(output[0], index=False)
+
+rule response_time_figs:
+    input: "data/raw/subject_{subject_id}/response_time{session_id}.npy"
+    output: "data/processed/dataset_{subject_id}/respons_time{session_id}_histo.png"
+    
+    run:
+        import numpy as np
+        import matplotlib.pyplot as plt
+        data = np.load(input[0])
+        plt.hist(data)
+        plt.savefig(output[0])
+
+

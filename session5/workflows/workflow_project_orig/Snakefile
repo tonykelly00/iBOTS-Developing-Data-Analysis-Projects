@@ -10,22 +10,15 @@ from data_utils import merge_behavioral_data_npy, merge_behavioral_data_mat_as_n
 
 rule all:
     input:
-  #      "figures/steinmetz/subject-{subject_name}/session-{session_date}/behavioral/licks.png",
-   #     "figures/steinmetz/subject-{subject_name}/session-{session_date}/behavioral/face.png",
-   #     "figures/steinmetz/subject-{subject_name}/session-{session_date}/behavioral/wheel_speed.png",
-   #     "figures/steinmetz/subject-{subject_name}/session-{session_date}/behavioral/pupil_position.png"
-        expand('figures/steinmetz/subject-Lederberg/session-{session_date}/behavioral/{data_label}.png)',
-        session_date=['20171105, 20171209'],
-        data_label=['licks', 'face', 'wheel_speed','pupil_position']),
-        
-        expand('figures/steinmetz/subject-Forssmann/session-{session_date}/behavioral/{data_label}.png)',
-        session_date=['20171105, 20171209'],
-        data_label=['licks', 'face', 'wheel_speed','pupil_position'])
-#why could subject name not be used? because within subject they have different session_date
+        "figures/steinmetz/subject-Lederberg/session-20171209/behavioral/licks.png",
+        "figures/steinmetz/subject-Lederberg/session-20171209/behavioral/face.png",
+        "figures/steinmetz/subject-Lederberg/session-20171209/behavioral/wheel_speed.png",
+        "figures/steinmetz/subject-Lederberg/session-20171209/behavioral/pupil_position.png"
+
 
 rule generate_licks_plot:
-    input: "steinmetz_data/raw/subject-Lederberg/session-{session_date}/behavioral/{data_label}" #data_label must = licks right?
-    output: "figures/steinmetz/subject-Lederberg/session-{session_date}/behavioral/{data_label}.png"
+    input: "steinmetz_data/raw/subject-Lederberg/session-20171209/behavioral/licks"
+    output: "figures/steinmetz/subject-Lederberg/session-20171209/behavioral/licks.png"
     run:
         licks_data = merge_behavioral_data_npy(input[0])
         fig, ax = plt.subplots(figsize=(4, 3), dpi=150)
